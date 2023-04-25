@@ -14,6 +14,8 @@ window.addEventListener("load", async () => {
   const templateHome = await loadTemplate("./pages/home/home.html")
   const templateCars = await loadTemplate("./pages/cars/cars.html")
   const templateCarsBootstrap = await loadTemplate("./pages/cars-bootstrap/cars.html")
+  const templateGrid = await loadTemplate("./pages/grid/grid.html")
+  const templateGridv2 = await loadTemplate("./pages/gridv2/gridv2.html")
 
   const router = new Navigo("/", { hash: true });
   window.router = router
@@ -34,6 +36,14 @@ window.addEventListener("load", async () => {
       },
       "/cars-v2": (match) => {
         renderTemplate(templateCarsBootstrap, "content")
+        loadV2(1, match)
+      },
+      "/grid": (match) => {
+        renderTemplate(templateGrid, "content")
+        loadV2(1, match)
+      },
+      "grid-v2": (match) => {
+        renderTemplate(templateGridv2, "content")
         loadV2(1, match)
       }
     })

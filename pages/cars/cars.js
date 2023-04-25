@@ -7,12 +7,30 @@ const TOTAL_RECORDS = 1000 //Should come from the backend
 const TOTAL = Math.ceil(TOTAL_RECORDS / SIZE)
 
 let cars = [];
+let sortField = "brand"
+let sortOrder = "asc"
+
+let initialized = false
+
+function handleSort(pageNo, match) {
+  sortOrder = sortOrder == "asc" ? "desc" : "asc"
+  sortField = "brand"
+  load(pageNo, match)
+}
 
 //If not used with Navigo, just leave out match
 export async function load(pg, match) {
+  if (!initialized) {
+    document.getElementById("header-brand").onclick = function (evt) {
+      evt.preventDefault()
+      handleSort(pageNo, match)
+    }
+    initialized = true
+  }
+
   const p = match?.params?.page || pg  //To support Navigo
   let pageNo = Number(p)
-  let queryString = ""//`?_limit=${SIZE}&_page=` + (pageNo - 1)
+  let queryString = `?_sort=${sortField}&_order=${sortOrder}&_limit=${SIZE}&_page=` + (pageNo - 1)
   try {
     cars = await fetch(`${SERVER_URL}cars${queryString}`)
       .then(res => res.json())
@@ -32,7 +50,6 @@ export async function load(pg, match) {
 
 
   // (C1-2) REDRAW PAGINATION
-  /*
   paginator({
     target: document.getElementById("car-paginator"),
     total: TOTAL,
@@ -40,7 +57,6 @@ export async function load(pg, match) {
     click: load
   });
 
-  */
   //Update URL to allow for CUT AND PASTE when used with the Navigo Router (callHandler: false ensures the handler will not be called twice)
-  //window.router?.navigate(`/cars${queryString}`, { callHandler: false, updateBrowserURL: true })
+  window.router?.navigate(`/cars${queryString}`, { callHandler: false, updateBrowserURL: true })
 }
